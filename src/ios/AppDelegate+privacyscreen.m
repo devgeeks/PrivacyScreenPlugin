@@ -23,6 +23,7 @@
 
 - (AppDelegate *)swizzled_init
 {
+  [[UIApplication sharedApplication] ignoreSnapshotOnNextApplicationLaunch];
   // Add any notification observers here...
 
 	// This actually calls the original init method over in AppDelegate. Equivilent to calling super
