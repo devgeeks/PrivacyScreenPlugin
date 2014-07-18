@@ -5,7 +5,7 @@ Both iOS (as of iOS 7) and Android have app switchers that display a screenshot 
 
 This is a lovely feature for most apps, but if your app displays sensitive information this is a possible privacy risk.
 
-This plugin flags your app so that it doesn't show your users' sensitive data in the task switcher. It sets the `FLAG_SECURE` flag in Android and hides the window in iOS.
+This plugin flags your app so that it doesn't show your users' sensitive data in the task switcher. It sets the [FLAG_SECURE](http://developer.android.com/reference/android/view/WindowManager.LayoutParams.html#FLAG_SECURE) flag in Android and hides the window in iOS.
 
 Installation
 ------------
