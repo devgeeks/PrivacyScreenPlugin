@@ -20,6 +20,8 @@ Usage:
 
 This plugin exposes no interface, it simply sets your app to be private. You don't need to do anything except install the plugin.
 
+Test this plugin on a real device because the iOS simulator (7.1 at least) does a poor job hiding your app.
+
 ## License
 
 The MIT License
