@@ -33,11 +33,13 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
+  [[UIApplication sharedApplication] ignoreSnapshotOnNextApplicationLaunch];
   self.window.hidden = NO;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
+  [[UIApplication sharedApplication] ignoreSnapshotOnNextApplicationLaunch];
   self.window.hidden = YES;
 }
 
