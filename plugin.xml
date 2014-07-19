@@ -13,7 +13,7 @@
       </feature>
     </config-file>
 
-		<source-file src="src/android/PrivacyScreenPlugin.java" target-dir="src/org/devgeeks/privacyscreen/PrivacyScreenPlugin"/>
+		<source-file src="src/android/PrivacyScreenPlugin.java" target-dir="src/org/devgeeks/privacyscreen"/>
 	</platform>
 
 	<platform name="ios">
