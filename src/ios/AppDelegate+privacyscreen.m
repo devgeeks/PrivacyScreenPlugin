@@ -7,6 +7,8 @@
 #import "AppDelegate+privacyscreen.h"
 #import <objc/runtime.h>
 
+UIImageView *imageView;
+
 @implementation AppDelegate (privacyscreen)
 
 // Taken from https://github.com/phonegap-build/PushPlugin/blob/master/src/ios/AppDelegate%2Bnotification.m 
@@ -33,14 +35,38 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-  [[UIApplication sharedApplication] ignoreSnapshotOnNextApplicationLaunch];
-  self.window.hidden = NO;
+  if (imageView == NULL) {
+    [[UIApplication sharedApplication] ignoreSnapshotOnNextApplicationLaunch];
+    self.window.hidden = NO;
+  } else {
+    [imageView removeFromSuperview];
+  }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-  [[UIApplication sharedApplication] ignoreSnapshotOnNextApplicationLaunch];
-  self.window.hidden = YES;
+  // for now, assuming 'Default' is the basename of the splashscreen, with a fallback to hiding the window
+  UIImage *splash = [self imageNamedForDevice: @"Default"];
+  if (splash == NULL) {
+    [[UIApplication sharedApplication] ignoreSnapshotOnNextApplicationLaunch];
+    self.window.hidden = YES;
+  } else {
+    imageView = [[UIImageView alloc]initWithFrame:[self.window frame]];
+    [imageView setImage:splash];
+    [UIApplication.sharedApplication.keyWindow.subviews.lastObject addSubview:imageView];
+  }
+}
+
+- (UIImage*)imageNamedForDevice:(NSString*)name
+{
+  if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    if (([UIScreen mainScreen].bounds.size.height * [UIScreen mainScreen].scale) >= 1136.0f) {
+      name = [name stringByAppendingString:@"-568h@2x"];
+    }
+  } else if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    name = [name stringByAppendingString:@"-Portrait"];
+  }
+  return [UIImage imageNamed: name];
 }
 
 @end
