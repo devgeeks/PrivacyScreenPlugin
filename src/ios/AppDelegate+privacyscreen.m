@@ -26,16 +26,15 @@ UIImageView *imageView;
   UIImage *splash = [UIImage imageNamed:imgName];
   if (splash == NULL) {
     self.window.hidden = YES;
-    imageView = NULL;
   } else {
     imageView = [[UIImageView alloc]initWithFrame:[self.window frame]];
     [imageView setImage:splash];
-    [UIApplication.sharedApplication.keyWindow.subviews.lastObject addSubview:imageView];
+    [self.viewController.view addSubview:imageView];
   }
 }
 
-// Code below borrowed from the CDV splashscreen plugin (https://github.com/apache/cordova-plugin-splashscreen)
-// Made some adjustments though, because landscape splashscreens are not available for iphone < 6 plus
+// Code below borrowed from the CDV splashscreen plugin @ https://github.com/apache/cordova-plugin-splashscreen
+// Made some adjustments though, becuase landscape splashscreens are not available for iphone < 6 plus
 - (CDV_iOSDevice) getCurrentDevice
 {
   CDV_iOSDevice device;
