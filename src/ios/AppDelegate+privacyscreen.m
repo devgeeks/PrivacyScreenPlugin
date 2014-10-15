@@ -11,66 +11,31 @@ UIImageView *imageView;
 
 @implementation AppDelegate (privacyscreen)
 
-// Taken from https://github.com/phonegap-build/PushPlugin/blob/master/src/ios/AppDelegate%2Bnotification.m
-// its dangerous to override a method from within a category.
-// Instead we will use method swizzling. we set this up in the load call.
-+ (void)load
-{
-    Method original, swizzled;
-
-    original = class_getInstanceMethod(self, @selector(init));
-    swizzled = class_getInstanceMethod(self, @selector(swizzled_init));
-    method_exchangeImplementations(original, swizzled);
-}
-
-- (AppDelegate *)swizzled_init
-{
-    if ([UIApplication respondsToSelector:@selector(ignoreSnapshotOnNextApplicationLaunch:)]) {
-        [[UIApplication sharedApplication] ignoreSnapshotOnNextApplicationLaunch];
-        // Add any notification observers here...
-    }
-    // This actually calls the original init method over in AppDelegate. Equivilent to calling super
-    // on an overrided method, this is not recursive, although it appears that way. neat huh?
-    return [self swizzled_init];
-}
-
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    if (imageView == NULL && [[UIApplication sharedApplication] respondsToSelector:@selector(ignoreSnapshotOnNextApplicationLaunch:)]) {
-        [[UIApplication sharedApplication] ignoreSnapshotOnNextApplicationLaunch];
-        self.window.hidden = NO;
-    } else {
-        [imageView removeFromSuperview];
-    }
+  if (imageView == NULL) {
+    self.window.hidden = NO;
+  } else {
+    [imageView removeFromSuperview];
+  }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-    UIImage *splash = [UIImage imageNamed:[self getImageName:self.viewController.interfaceOrientation delegate:(id<CDVScreenOrientationDelegate>)self.viewController device:[self getCurrentDevice]]];
-    if (splash == NULL && [[UIApplication sharedApplication] respondsToSelector:@selector(ignoreSnapshotOnNextApplicationLaunch:)]) {
-        [[UIApplication sharedApplication] ignoreSnapshotOnNextApplicationLaunch];
-        self.window.hidden = YES;
-    } else {
-        imageView = [[UIImageView alloc]initWithFrame:[self.window frame]];
-        [imageView setImage:splash];
-        [UIApplication.sharedApplication.keyWindow.subviews.lastObject addSubview:imageView];
-    }
+  NSString *imgName = [self getImageName:self.viewController.interfaceOrientation delegate:(id<CDVScreenOrientationDelegate>)self.viewController device:[self getCurrentDevice]];
+  UIImage *splash = [UIImage imageNamed:imgName];
+  if (splash == NULL) {
+    self.window.hidden = YES;
+    imageView = NULL;
+  } else {
+    imageView = [[UIImageView alloc]initWithFrame:[self.window frame]];
+    [imageView setImage:splash];
+    [UIApplication.sharedApplication.keyWindow.subviews.lastObject addSubview:imageView];
+  }
 }
-
-- (UIImage*)imageNamedForDevice:(NSString*)name
-{
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        if (([UIScreen mainScreen].bounds.size.height * [UIScreen mainScreen].scale) >= 1136.0f) {
-            name = [name stringByAppendingString:@"-568h@2x"];
-        }
-    } else if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        name = [name stringByAppendingString:@"-Portrait"];
-    }
-    return [UIImage imageNamed: name];
-}
-
 
 // Code below borrowed from the CDV splashscreen plugin (https://github.com/apache/cordova-plugin-splashscreen)
+// Made some adjustments though, because landscape splashscreens are not available for iphone < 6 plus
 - (CDV_iOSDevice) getCurrentDevice
 {
   CDV_iOSDevice device;
@@ -113,10 +78,13 @@ UIImageView *imageView;
     imageName = @"Default";
   }
   
+  BOOL isLandscape = supportsLandscape &&
+  (currentOrientation == UIInterfaceOrientationLandscapeLeft || currentOrientation == UIInterfaceOrientationLandscapeRight);
+  
   if (device.iPhone5) { // does not support landscape
-    imageName = [imageName stringByAppendingString:@"-568h"];
+    imageName = isLandscape ? nil : [imageName stringByAppendingString:@"-568h"];
   } else if (device.iPhone6) { // does not support landscape
-    imageName = [imageName stringByAppendingString:@"-667h"];
+    imageName = isLandscape ? nil : [imageName stringByAppendingString:@"-667h"];
   } else if (device.iPhone6Plus) { // supports landscape
     if (isOrientationLocked) {
       imageName = [imageName stringByAppendingString:(supportsLandscape ? @"-Landscape" : @"")];
