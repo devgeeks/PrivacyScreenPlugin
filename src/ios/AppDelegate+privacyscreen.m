@@ -27,7 +27,7 @@ UIImageView *imageView;
   if (splash == NULL) {
     self.window.hidden = YES;
   } else {
-    imageView = [[UIImageView alloc]initWithFrame:[self.window frame]];
+    imageView = [[UIImageView alloc]initWithFrame:[self.viewController.view bounds]];
     [imageView setImage:splash];
     [self.viewController.view addSubview:imageView];
   }

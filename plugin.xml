@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" id="org.devgeeks.privacyscreen" version="0.0.6">
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" id="org.devgeeks.privacyscreen" version="0.0.7">
 
 	<name>PrivacyScreenPlugin</name>
 	<description>Secures your app from displaying a screenshot in task switchers under Android and iOS. Keeps sensitive information private.</description>
