@@ -7,7 +7,8 @@ This is a lovely feature for most apps, but if your app displays sensitive infor
 
 This plugin flags your app so that it doesn't show your users' sensitive data in the task switcher. It sets the [FLAG_SECURE](http://developer.android.com/reference/android/view/WindowManager.LayoutParams.html#FLAG_SECURE) flag in Android (which also prevents manual screenshots from being taken) and hides the window in iOS.
 
-On iOS this plugin will show your splashscreen in the app switcher, but it requires your splashscreens basesname to be named `Default`. E.g. `Default~iphone.png` and `Default-568@2x~iphone.png`.
+On iOS this plugin will try to show your splashscreen in the app switcher. It will search for splashscreens prefixed by `Default` or the value of the key `UILaunchImageFile` in your .plist file.
+If it fails to find a splashscreen for a specific device or orientation (portrait or landscape), a black screen is shown instead.
 
 Installation
 ------------
