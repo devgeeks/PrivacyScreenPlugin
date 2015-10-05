@@ -16,7 +16,7 @@ Installation
 For Cordova 3.x.x:
 
 1. To add this plugin just type: `cordova plugin add https://github.com/devgeeks/PrivacyScreenPlugin.git` or `phonegap local plugin add https://github.com/devgeeks/PrivacyScreenPlugin.git`
-2. To remove this plugin type: `cordova plugin remove org.devgeeks.PrivacyScreenPlugin` or `phonegap local plugin remove org.devgeeks.PrivacyScreenPlugin`
+2. To remove this plugin type: `cordova plugin remove cordova-plugin-privacyscreen` or `phonegap local plugin remove cordova-plugin-privacyscreen`
 
 Usage:
 ------
