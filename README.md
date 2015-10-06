@@ -1,4 +1,4 @@
-PivacyScreenPlugin
+PrivacyScreenPlugin
 ==================
 
 Both iOS (as of iOS 7) and Android have app switchers that display a screenshot of your app.
