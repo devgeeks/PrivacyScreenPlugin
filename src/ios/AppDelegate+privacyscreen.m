@@ -67,10 +67,7 @@ UIImageView *imageView;
   
   // Checks to see if the developer has locked the orientation to use only one of Portrait or Landscape
   BOOL supportsLandscape = (supportedOrientations & UIInterfaceOrientationMaskLandscape);
-  BOOL supportsPortrait = (supportedOrientations & UIInterfaceOrientationMaskPortrait || supportedOrientations & UIInterfaceOrientationMaskPortraitUpsideDown);
-  // this means there are no mixed orientations in there
-  BOOL isOrientationLocked = !(supportsPortrait && supportsLandscape);
-  
+
   if (imageName) {
     imageName = [imageName stringByDeletingPathExtension];
   } else {
@@ -80,42 +77,18 @@ UIImageView *imageView;
   BOOL isLandscape = supportsLandscape &&
   (currentOrientation == UIInterfaceOrientationLandscapeLeft || currentOrientation == UIInterfaceOrientationLandscapeRight);
   
-  if (device.iPhone5) { // does not support landscape
-    imageName = isLandscape ? nil : [imageName stringByAppendingString:@"-568h"];
-  } else if (device.iPhone6) { // does not support landscape
-    imageName = isLandscape ? nil : [imageName stringByAppendingString:@"-667h"];
-  } else if (device.iPhone6Plus) { // supports landscape
-    if (isOrientationLocked) {
-      imageName = [imageName stringByAppendingString:(supportsLandscape ? @"-Landscape" : @"")];
-    } else {
-      switch (currentOrientation) {
-        case UIInterfaceOrientationLandscapeLeft:
-        case UIInterfaceOrientationLandscapeRight:
-          imageName = [imageName stringByAppendingString:@"-Landscape"];
-          break;
-        default:
-          break;
-      }
-    }
-    imageName = [imageName stringByAppendingString:@"-736h"];
-    
-  } else if (device.iPad) { // supports landscape
-    if (isOrientationLocked) {
-      imageName = [imageName stringByAppendingString:(supportsLandscape ? @"-Landscape" : @"-Portrait")];
-    } else {
-      switch (currentOrientation) {
-        case UIInterfaceOrientationLandscapeLeft:
-        case UIInterfaceOrientationLandscapeRight:
-          imageName = [imageName stringByAppendingString:@"-Landscape"];
-          break;
-          
-        case UIInterfaceOrientationPortrait:
-        case UIInterfaceOrientationPortraitUpsideDown:
-        default:
-          imageName = [imageName stringByAppendingString:@"-Portrait"];
-          break;
-      }
-    }
+  CGSize viewSize = [UIScreen mainScreen].bounds.size;
+  NSString* viewOrientation = @"Portrait";
+  if (isLandscape) {
+      viewSize = CGSizeMake(viewSize.height, viewSize.width);
+      viewOrientation = @"Landscape";
+  }
+  
+  NSArray* imagesDict = [[[NSBundle mainBundle] infoDictionary] valueForKey:@"UILaunchImages"];
+  for (NSDictionary* dict in imagesDict) {
+      CGSize imageSize = CGSizeFromString(dict[@"UILaunchImageSize"]);
+      if (CGSizeEqualToSize(imageSize, viewSize) && [viewOrientation isEqualToString:dict[@"UILaunchImageOrientation"]])
+          imageName = dict[@"UILaunchImageName"];
   }
   
   return imageName;
