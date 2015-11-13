@@ -4,6 +4,11 @@
 	<name>PrivacyScreenPlugin</name>
 	<description>Secures your app from displaying a screenshot in task switchers under Android and iOS. Keeps sensitive information private.</description>
 	<license>MIT</license>
+
+    <js-module src="www/PrivacyScreenPlugin.js" name="PrivacyScreenPlugin">
+        <clobbers target="PrivacyScreenPlugin" />
+    </js-module>
+
 	<platform name="android">
 
     <config-file parent="/*" target="res/xml/config.xml">
@@ -19,13 +24,17 @@
 	<platform name="ios">
 
     <config-file parent="/*" target="config.xml">
-      <feature name="PrivacyScreenPlugin">
-        <param name="ios-package" value="PrivacyScreenPlugin"/>
+      <feature name="PrivacyScreen">
+        <param name="ios-package" value="PrivacyScreen"/>
         <param name="onload" value="true" />
       </feature>
     </config-file>
 
-		<source-file src="src/ios/AppDelegate+privacyscreen.h"/>
-		<source-file src="src/ios/AppDelegate+privacyscreen.m"/>
+		<source-file src="src/ios/PrivacyScreen.h"/>
+		<source-file src="src/ios/PrivacyScreen.m"/>
+		<source-file src="src/ios/FXBlurView.h"/>
+		<source-file src="src/ios/FXBlurView.m"/>
+<framework src="QuartzCore.framework" />
+<framework src="Accelerate.framework" />
 	</platform>
 </plugin>
