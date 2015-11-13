@@ -1,6 +1,4 @@
 //
-//  Bank Delen Cordova Plugin
-//
 //  Created by Jeroen Trappers
 //  Copyright (c) 2015 Appmire. All rights reserved.
 //
