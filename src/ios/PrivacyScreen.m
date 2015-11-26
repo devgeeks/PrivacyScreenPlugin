@@ -20,6 +20,8 @@
     //[super pluginInitialize];
     [self removeObservers];
     [self addObservers];
+
+    [self blurView]; // create the blurview in advance.
 }
 
 - (void) onReset
