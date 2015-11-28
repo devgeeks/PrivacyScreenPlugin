@@ -56,7 +56,7 @@
 
 - (UIWindow *) window
 {
-    return [[UIApplication sharedApplication].windows firstObject];
+    return [[UIApplication sharedApplication].delegate window];
 }
 
 - (UIView *)blurView
