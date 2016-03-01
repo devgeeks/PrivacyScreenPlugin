@@ -11,7 +11,51 @@ UIImageView *imageView;
 
 @implementation AppDelegate (privacyscreen)
 
-- (void)applicationDidBecomeActive:(UIApplication *)application
+// its dangerous to override a method from within a category.
+// Instead we will use method swizzling. we set this up in the load call.
++ (void)load
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class class = [self class];
+
+        SEL originalSelector = @selector(init);
+        SEL swizzledSelector = @selector(privacyScreenSwizzledInit);
+
+        Method original = class_getInstanceMethod(class, originalSelector);
+        Method swizzled = class_getInstanceMethod(class, swizzledSelector);
+
+        BOOL didAddMethod =
+        class_addMethod(class,
+                        originalSelector,
+                        method_getImplementation(swizzled),
+                        method_getTypeEncoding(swizzled));
+
+        if (didAddMethod) {
+            class_replaceMethod(class,
+                                swizzledSelector,
+                                method_getImplementation(original),
+                                method_getTypeEncoding(original));
+        } else {
+            method_exchangeImplementations(original, swizzled);
+        }
+    });
+}
+
+- (AppDelegate *)privacyScreenSwizzledInit
+{
+    [[NSNotificationCenter defaultCenter]addObserver:self
+                                            selector:@selector(privacyScreenOnApplicationDidBecomeActive:)
+                                                name:UIApplicationDidBecomeActiveNotification
+                                              object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self
+                                            selector:@selector(privacyScreenOnApplicationWillResignActive:)
+                                                name:UIApplicationWillResignActiveNotification
+                                              object:nil];
+    return [self privacyScreenSwizzledInit];
+}
+
+- (void)privacyScreenOnApplicationDidBecomeActive:(NSNotification *)notification
 {
   if (imageView == NULL) {
     self.window.hidden = NO;
@@ -20,7 +64,7 @@ UIImageView *imageView;
   }
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application
+- (void)privacyScreenOnApplicationWillResignActive:(NSNotification *)notification
 {
   NSString *imgName = [self getImageName:self.viewController.interfaceOrientation delegate:(id<CDVScreenOrientationDelegate>)self.viewController device:[self getCurrentDevice]];
   UIImage *splash = [UIImage imageNamed:imgName];
@@ -38,13 +82,13 @@ UIImageView *imageView;
 - (CDV_iOSDevice) getCurrentDevice
 {
   CDV_iOSDevice device;
-  
+
   UIScreen* mainScreen = [UIScreen mainScreen];
   CGFloat mainScreenHeight = mainScreen.bounds.size.height;
   CGFloat mainScreenWidth = mainScreen.bounds.size.width;
-  
+
   int limit = MAX(mainScreenHeight,mainScreenWidth);
-  
+
   device.iPad = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad);
   device.iPhone = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone);
   device.retina = ([mainScreen scale] == 2.0);
@@ -54,7 +98,7 @@ UIImageView *imageView;
   // this is appropriate for detecting the runtime screen environment
   device.iPhone6 = (device.iPhone && limit == 667.0);
   device.iPhone6Plus = (device.iPhone && limit == 736.0);
-  
+
   return device;
 }
 
@@ -62,24 +106,24 @@ UIImageView *imageView;
 {
   // Use UILaunchImageFile if specified in plist.  Otherwise, use Default.
   NSString* imageName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UILaunchImageFile"];
-  
+
   NSUInteger supportedOrientations = [orientationDelegate supportedInterfaceOrientations];
-  
+
   // Checks to see if the developer has locked the orientation to use only one of Portrait or Landscape
   BOOL supportsLandscape = (supportedOrientations & UIInterfaceOrientationMaskLandscape);
   BOOL supportsPortrait = (supportedOrientations & UIInterfaceOrientationMaskPortrait || supportedOrientations & UIInterfaceOrientationMaskPortraitUpsideDown);
   // this means there are no mixed orientations in there
   BOOL isOrientationLocked = !(supportsPortrait && supportsLandscape);
-  
+
   if (imageName) {
     imageName = [imageName stringByDeletingPathExtension];
   } else {
     imageName = @"Default";
   }
-  
+
   BOOL isLandscape = supportsLandscape &&
   (currentOrientation == UIInterfaceOrientationLandscapeLeft || currentOrientation == UIInterfaceOrientationLandscapeRight);
-  
+
   if (device.iPhone5) { // does not support landscape
     imageName = isLandscape ? nil : [imageName stringByAppendingString:@"-568h"];
   } else if (device.iPhone6) { // does not support landscape
@@ -98,7 +142,7 @@ UIImageView *imageView;
       }
     }
     imageName = [imageName stringByAppendingString:@"-736h"];
-    
+
   } else if (device.iPad) { // supports landscape
     if (isOrientationLocked) {
       imageName = [imageName stringByAppendingString:(supportsLandscape ? @"-Landscape" : @"-Portrait")];
@@ -108,7 +152,7 @@ UIImageView *imageView;
         case UIInterfaceOrientationLandscapeRight:
           imageName = [imageName stringByAppendingString:@"-Landscape"];
           break;
-          
+
         case UIInterfaceOrientationPortrait:
         case UIInterfaceOrientationPortraitUpsideDown:
         default:
@@ -117,7 +161,7 @@ UIImageView *imageView;
       }
     }
   }
-  
+
   return imageName;
 }
 
