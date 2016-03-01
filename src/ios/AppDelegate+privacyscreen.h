@@ -13,11 +13,12 @@ typedef struct {
   BOOL iPhone6;
   BOOL iPhone6Plus;
   BOOL retina;
-  
+
 } CDV_iOSDevice;
 
 @interface AppDelegate (privacyscreen)
-- (void)applicationWillResignActive:(UIApplication *)application;
-- (void)applicationDidBecomeActive:(UIApplication *)application;
+
+- (void)privacyScreenOnApplicationDidBecomeActive:(NSNotification *)notification;
+- (void)privacyScreenOnApplicationWillResignActive:(NSNotification *)notification;
 
 @end
