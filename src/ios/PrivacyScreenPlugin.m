@@ -1,31 +1,40 @@
 /**
- * AppDelegate+notification.m
+ * PrivacyScreenPlugin.m
  * Created by Tommy-Carlos Williams on 18/07/2014
  * Copyright (c) 2014 Tommy-Carlos Williams. All rights reserved.
  * MIT Licensed
  */
-#import "AppDelegate+privacyscreen.h"
-#import <objc/runtime.h>
+#import "PrivacyScreenPlugin.h"
 
 UIImageView *imageView;
 
-@implementation AppDelegate (privacyscreen)
+@implementation PrivacyScreenPlugin
 
-- (void)applicationDidBecomeActive:(UIApplication *)application
+- (void)pluginInitialize
+{
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppDidBecomeActive:)
+                                               name:UIApplicationDidBecomeActiveNotification object:nil];
+
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppWillResignActive:)
+                                               name:UIApplicationWillResignActiveNotification object:nil];
+}
+
+- (void)onAppDidBecomeActive:(UIApplication *)application
 {
   if (imageView == NULL) {
-    self.window.hidden = NO;
+    self.viewController.view.window.hidden = NO;
   } else {
     [imageView removeFromSuperview];
   }
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application
+- (void)onAppWillResignActive:(UIApplication *)application
 {
-  NSString *imgName = [self getImageName:self.viewController.interfaceOrientation delegate:(id<CDVScreenOrientationDelegate>)self.viewController device:[self getCurrentDevice]];
+  CDVViewController *vc = (CDVViewController*)self.viewController;
+  NSString *imgName = [self getImageName:self.viewController.interfaceOrientation delegate:(id<CDVScreenOrientationDelegate>)vc device:[self getCurrentDevice]];
   UIImage *splash = [UIImage imageNamed:imgName];
   if (splash == NULL) {
-    self.window.hidden = YES;
+    self.viewController.view.window.hidden = YES;
   } else {
     imageView = [[UIImageView alloc]initWithFrame:[self.viewController.view bounds]];
     [imageView setImage:splash];
