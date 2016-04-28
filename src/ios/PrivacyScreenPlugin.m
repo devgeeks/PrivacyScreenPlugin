@@ -38,7 +38,12 @@ UIImageView *imageView;
   } else {
     imageView = [[UIImageView alloc]initWithFrame:[self.viewController.view bounds]];
     [imageView setImage:splash];
-    [[UIApplication sharedApplication].keyWindow addSubview:imageView];
+    
+    #ifdef __CORDOVA_4_0_0
+        [[UIApplication sharedApplication].keyWindow addSubview:imageView];
+    #else
+        [self.viewController.view addSubview:imageView];
+    #endif
   }
 }
 
