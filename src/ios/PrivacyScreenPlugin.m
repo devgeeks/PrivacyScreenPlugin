@@ -38,7 +38,7 @@ UIImageView *imageView;
   } else {
     imageView = [[UIImageView alloc]initWithFrame:[self.viewController.view bounds]];
     [imageView setImage:splash];
-    [self.viewController.view addSubview:imageView];
+    [[UIApplication sharedApplication].keyWindow addSubview:imageView];
   }
 }
 
