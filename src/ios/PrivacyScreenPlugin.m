@@ -57,6 +57,7 @@ UIImageView *imageView;
   device.iPad = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad);
   device.iPhone = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone);
   device.retina = ([mainScreen scale] == 2.0);
+  device.iPhone4 = (device.iPhone && limit == 480.0);
   device.iPhone5 = (device.iPhone && limit == 568.0);
   // note these below is not a true device detect, for example if you are on an
   // iPhone 6/6+ but the app is scaled it will prob set iPhone5 as true, but
@@ -84,6 +85,21 @@ UIImageView *imageView;
     imageName = [imageName stringByDeletingPathExtension];
   } else {
     imageName = @"Default";
+  }
+
+  // Add Asset Catalog specific prefixes
+  if ([imageName isEqualToString:@"LaunchImage"])
+  {
+    if(device.iPhone4 || device.iPhone5 || device.iPad) {
+      imageName = [imageName stringByAppendingString:@"-700"];
+    } else if(device.iPhone6) {
+      imageName = [imageName stringByAppendingString:@"-800"];
+    } else if(device.iPhone6Plus) {
+      imageName = [imageName stringByAppendingString:@"-800"];
+      if (currentOrientation == UIInterfaceOrientationPortrait || currentOrientation == UIInterfaceOrientationPortraitUpsideDown) {
+        imageName = [imageName stringByAppendingString:@"-Portrait"];
+      }
+    }
   }
   
   BOOL isLandscape = supportsLandscape &&
