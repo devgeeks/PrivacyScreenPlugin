@@ -6,7 +6,7 @@
  */
 #import "PrivacyScreenPlugin.h"
 
-UIImageView *imageView;
+static UIImageView *imageView;
 
 @implementation PrivacyScreenPlugin
 
