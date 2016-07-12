@@ -10,8 +10,17 @@ static UIImageView *imageView;
 
 @implementation PrivacyScreenPlugin
 
+- (id)settingForKey:(NSString*)key
+{
+    return [self.commandDelegate.settings objectForKey:[key lowercaseString]];
+}
+
 - (void)pluginInitialize
 {
+  if ([self settingForKey:@"PrivacyScreenEnabled"]) {
+      self.privacyScreenEnabled = [(NSNumber*)[self settingForKey:@"PrivacyScreenEnabled"] boolValue];
+  }
+
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppDidBecomeActive:)
                                                name:UIApplicationDidBecomeActiveNotification object:nil];
 
@@ -30,6 +39,10 @@ static UIImageView *imageView;
 
 - (void)onAppWillResignActive:(UIApplication *)application
 {
+  if (!_privacyScreenEnabled) {
+    return;
+  }
+
   CDVViewController *vc = (CDVViewController*)self.viewController;
   NSString *imgName = [self getImageName:self.viewController.interfaceOrientation delegate:(id<CDVScreenOrientationDelegate>)vc device:[self getCurrentDevice]];
   UIImage *splash = [UIImage imageNamed:imgName];
@@ -149,6 +162,16 @@ static UIImageView *imageView;
   }
   
   return imageName;
+}
+
+- (void)enabled:(CDVInvokedUrlCommand*)command
+{
+    id value = [command.arguments objectAtIndex:0];
+    if (!([value isKindOfClass:[NSNumber class]])) {
+        value = [NSNumber numberWithBool:NO];
+    }
+
+    self.privacyScreenEnabled = [value boolValue];
 }
 
 @end

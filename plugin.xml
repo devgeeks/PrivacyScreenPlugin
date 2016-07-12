@@ -4,28 +4,33 @@
 	<name>PrivacyScreenPlugin</name>
 	<description>Secures your app from displaying a screenshot in task switchers under Android and iOS. Keeps sensitive information private.</description>
 	<license>MIT</license>
-	<platform name="android">
 
-    <config-file parent="/*" target="res/xml/config.xml">
-      <feature name="PrivacyScreenPlugin">
-        <param name="android-package" value="org.devgeeks.privacyscreen.PrivacyScreenPlugin"/>
-        <param name="onload" value="true" />
-      </feature>
-    </config-file>
+    <js-module src="www/PrivacyScreenPlugin.js" name="privacyscreen">
+        <clobbers target="window.PrivacyScreen" />
+    </js-module>
+
+	<platform name="android">
+        <config-file parent="/*" target="res/xml/config.xml">
+          <feature name="PrivacyScreenPlugin">
+            <param name="android-package" value="org.devgeeks.privacyscreen.PrivacyScreenPlugin"/>
+            <param name="onload" value="true" />
+          </feature>
+        </config-file>
 
 		<source-file src="src/android/PrivacyScreenPlugin.java" target-dir="src/org/devgeeks/privacyscreen"/>
 	</platform>
 
 	<platform name="ios">
+        <config-file parent="/*" target="config.xml">
+          <feature name="PrivacyScreenPlugin">
+            <param name="ios-package" value="PrivacyScreenPlugin"/>
+            <param name="onload" value="true" />
+          </feature>
+          <preference name="PrivacyScreenEnabled" value="true" />
+        </config-file>
 
-    <config-file parent="/*" target="config.xml">
-      <feature name="PrivacyScreenPlugin">
-        <param name="ios-package" value="PrivacyScreenPlugin"/>
-        <param name="onload" value="true" />
-      </feature>
-    </config-file>
-
-		<source-file src="src/ios/PrivacyScreenPlugin.h"/>
-		<source-file src="src/ios/PrivacyScreenPlugin.m"/>
+        <source-file src="src/ios/PrivacyScreenPlugin.h"/>
+        <source-file src="src/ios/PrivacyScreenPlugin.m"/>
 	</platform>
+
 </plugin>
