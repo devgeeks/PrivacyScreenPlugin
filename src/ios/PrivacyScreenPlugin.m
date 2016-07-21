@@ -34,6 +34,7 @@ static UIImageView *imageView;
   NSString *imgName = [self getImageName:self.viewController.interfaceOrientation delegate:(id<CDVScreenOrientationDelegate>)vc device:[self getCurrentDevice]];
   UIImage *splash = [UIImage imageNamed:imgName];
   if (splash == NULL) {
+    imageView = NULL;
     self.viewController.view.window.hidden = YES;
   } else {
     imageView = [[UIImageView alloc]initWithFrame:[self.viewController.view bounds]];
