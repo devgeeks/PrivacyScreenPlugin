@@ -12,14 +12,14 @@ static UIImageView *imageView;
 
 - (void)pluginInitialize
 {
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppDidBecomeActive:)
-                                               name:UIApplicationDidBecomeActiveNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppWillEnterForeground:)
+                                           name:UIApplicationWillEnterForegroundNotification object:nil];
 
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppWillResignActive:)
-                                               name:UIApplicationWillResignActiveNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppDidEnterBackground:)
+                                           name:UIApplicationDidEnterBackgroundNotification object:nil];
 }
 
-- (void)onAppDidBecomeActive:(UIApplication *)application
+- (void)onAppWillEnterForeground:(UIApplication *)application
 {
   if (imageView == NULL) {
     self.viewController.view.window.hidden = NO;
@@ -28,7 +28,7 @@ static UIImageView *imageView;
   }
 }
 
-- (void)onAppWillResignActive:(UIApplication *)application
+- (void)onAppDidEnterBackground:(UIApplication *)application
 {
   CDVViewController *vc = (CDVViewController*)self.viewController;
   NSString *imgName = [self getImageName:self.viewController.interfaceOrientation delegate:(id<CDVScreenOrientationDelegate>)vc device:[self getCurrentDevice]];
