@@ -18,6 +18,13 @@ typedef struct {
   
 } CDV_iOSDevice;
 
-@interface PrivacyScreenPlugin : CDVPlugin
+@interface PrivacyScreenPlugin : CDVPlugin {
+    @protected
+    BOOL _privacyScreenEnabled;
+}
+
+@property (readwrite, assign) BOOL privacyScreenEnabled;
+
+- (void)enabled:(CDVInvokedUrlCommand*)command;
 
 @end
