@@ -67,6 +67,10 @@ public class PrivacyScreenPlugin extends CordovaPlugin {
    * @see #KEY_PRIVACY_SCREEN_ENABLED
    */
   private boolean isPrivacyScreenEnabled(boolean defValue, boolean shouldCorrect) {
+    if (!preferences.contains(KEY_PRIVACY_SCREEN_ENABLED)) {
+      setPrivacyScreenEnabled(defValue);
+      return defValue;
+    }
     try {
       return preferences.getBoolean(KEY_PRIVACY_SCREEN_ENABLED, defValue);
     } catch (ClassCastException e) {
