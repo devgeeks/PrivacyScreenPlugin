@@ -25,7 +25,7 @@
       </feature>
     </config-file>
 
-		<source-file src="src/ios/PrivacyScreenPlugin.h"/>
+		<header-file src="src/ios/PrivacyScreenPlugin.h"/>
 		<source-file src="src/ios/PrivacyScreenPlugin.m"/>
 	</platform>
 </plugin>
