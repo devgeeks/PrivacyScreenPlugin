@@ -23,6 +23,10 @@ Usage:
 
 This plugin exposes no interface, it simply sets your app to be private. You don't need to do anything except install the plugin.
 
+For iOS there are 2 preferences that can be set in config.xml:
+- "PrivacyOnBackground": If set to "true" allows splashscreen to be shown only when app enters background (i.e. switched to another app or pressed the home button)
+- "PrivacyOverrideLaunchImage": If set to "true" allows privacy screen to be the Default image even if LaunchImage is set in the info-plist
+ 
 Test this plugin on a real device because the iOS simulator (7.1 at least) does a poor job hiding your app.
 
 ## License
