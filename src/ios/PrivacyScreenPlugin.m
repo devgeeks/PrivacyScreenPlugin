@@ -94,7 +94,9 @@ static UIImageView *imageView;
 
 - (NSString*)getImageName:(UIInterfaceOrientation)currentOrientation delegate:(id<CDVScreenOrientationDelegate>)orientationDelegate device:(CDV_iOSDevice)device
 {
-    NSString* imageName = @"Default";
+    NSString* privacyImageNameKey = @"privacyimagename";
+    NSString* prefImageName = [self.commandDelegate.settings objectForKey:[privacyImageNameKey lowercaseString]];
+    NSString* imageName = prefImageName ? prefImageName : @"Default";
     //Override Launch images?
     NSString* privacyOverrideLaunchImage = @"privacyoverridelaunchimage";
     if([self.commandDelegate.settings objectForKey:[privacyOverrideLaunchImage lowercaseString]] && [[self.commandDelegate.settings objectForKey:[privacyOverrideLaunchImage lowercaseString]] isEqualToString:@"true"])
