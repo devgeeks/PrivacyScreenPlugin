@@ -39,8 +39,16 @@ static UIImageView *imageView;
     NSString *imgName = [self getImageName:self.viewController.interfaceOrientation delegate:(id<CDVScreenOrientationDelegate>)vc device:[self getCurrentDevice]];
     UIImage *splash = [UIImage imageNamed:imgName];
     if (splash == NULL) {
-        imageView = NULL;
-        self.viewController.view.window.hidden = YES;
+        
+        //try to take out hyfens and see if that works (Compatbility with Outsystems mobile issue)
+        imgName = [imgName stringByReplacingOccurrencesOfString:@"-" withString:@""];
+        
+        UIImage *splash = [UIImage imageNamed:imgName];
+        //If still null image doesn't really exist.
+        if (splash == NULL) {
+            imageView = NULL;
+            self.viewController.view.window.hidden = YES;
+        }
     } else {
         imageView = [[UIImageView alloc]initWithFrame:[self.viewController.view bounds]];
         [imageView setImage:splash];
