@@ -37,23 +37,13 @@ static UIImageView *imageView;
 {
     CDVViewController *vc = (CDVViewController*)self.viewController;
     NSString *imgName = [self getImageName:self.viewController.interfaceOrientation delegate:(id<CDVScreenOrientationDelegate>)vc device:[self getCurrentDevice]];
-    UIImage *splash = [UIImage imageNamed:imgName];
+    UIImage* splash = [self getImageFromName:imgName];
     if (splash == NULL)
     {
-        
-        //try to take out hyfens and see if that works (Compatbility with Outsystems mobile issue)
-        imgName = [imgName stringByReplacingOccurrencesOfString:@"-" withString:@""];
-        
-        splash = [UIImage imageNamed:imgName];
-        //If still null image doesn't really exist.
-        if (splash == NULL) {
-            imageView = NULL;
-            self.viewController.view.window.hidden = YES;
-        }
+        imageView = NULL;
+        self.viewController.view.window.hidden = YES;
     }
-    
-    //If splash image ended up being initialized
-    if(splash)
+    else
     {
         imageView = [[UIImageView alloc]initWithFrame:[self.viewController.view bounds]];
         [imageView setImage:splash];
@@ -174,8 +164,37 @@ static UIImageView *imageView;
             }
         }
     }
-    
+//    if(imageName)
+//    {
+//        imageName = [imageName stringByAppendingString:@".png"];
+//    }
     return imageName;
+}
+
+- (UIImage*) getImageFromName:(NSString*) imageName
+{
+    UIImage *image = [UIImage imageNamed:imageName];
+    if (image == NULL)
+    {
+        //If not in bundle try to go to resources path
+        NSString* imagePath = [imageName stringByAppendingString:@".png"];
+        image = [UIImage imageWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:imagePath]];
+        if(image)
+            return image;
+        
+        //try to take out hyfens and see if that works (Compatbility with Outsystems mobile issue)
+        imageName = [imageName stringByReplacingOccurrencesOfString:@"-" withString:@""];
+        image = [UIImage imageNamed:imageName];
+        if(image == NULL)
+        {
+            imagePath = [imageName stringByAppendingString:@".png"];
+            image = [UIImage imageWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:imagePath]];
+            //If still null image doesn't really exist.
+        }
+    }
+    
+    
+    return image;
 }
 
 @end
