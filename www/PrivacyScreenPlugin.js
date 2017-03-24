@@ -1,5 +1,3 @@
-cordova.define("cordova-plugin-privacy-screen.PrivacyScreen", function(require, exports, module) {
-
 function PrivacyScreen() {}
                
 //Default time to remove privacy screen is 2 seconds (+0.1s for fade animation)
@@ -25,4 +23,3 @@ PrivacyScreen.install = function() {
 };
                
 cordova.addConstructor(PrivacyScreen.install);
-});
