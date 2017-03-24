@@ -34,4 +34,22 @@ public class PrivacyScreenPlugin extends CordovaPlugin {
     Activity activity = this.cordova.getActivity();
     activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
   }
+    //Not used in Android
+    @Override
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        if ("setTimer".equals(action)) {
+            callbackContext.success();
+            return true;
+        }
+        else if ("hidePrivacyScreen".equals(action)) {
+            callbackContext.success();
+            return true;
+        }
+        else if ("showPrivacyScreen".equals(action)) {
+            callbackContext.success();
+            return true;
+        }
+        
+        return false;  // Returning false results in a "MethodNotFound" error.
+    }
 }
