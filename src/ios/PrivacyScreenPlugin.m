@@ -6,7 +6,7 @@
  */
 #import "PrivacyScreenPlugin.h"
 
-#define PRIVACY_TIMER_DEFAULT   2.0f;
+#define PRIVACY_TIMER_DEFAULT   5.0f;
 
 static UIImageView *imageView;
 
