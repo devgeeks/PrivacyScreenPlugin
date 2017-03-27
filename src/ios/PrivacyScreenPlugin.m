@@ -23,9 +23,12 @@ static UIImageView *imageView;
 - (void)pluginInitialize
 {
     NSString* privacyTimerKey = @"privacytimer";
-    NSString* prefTimer = [self.commandDelegate.settings objectForKey:[privacyTimerKey lowercaseString]];\
+    NSString* prefTimer = [self.commandDelegate.settings objectForKey:[privacyTimerKey lowercaseString]];
+    //Default value
+    self.privacyTimerInterval = PRIVACY_TIMER_DEFAULT;
     if(prefTimer)
-    self.privacyTimerInterval = [prefTimer floatValue] > 0.0f ? [prefTimer floatValue] : PRIVACY_TIMER_DEFAULT;
+        self.privacyTimerInterval = [prefTimer floatValue] > 0.0f ? [prefTimer floatValue] : PRIVACY_TIMER_DEFAULT;
+    
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppDidBecomeActive:)
                                                  name:UIApplicationDidBecomeActiveNotification object:nil];
@@ -35,11 +38,11 @@ static UIImageView *imageView;
     NSString* onBackgroundKey = @"privacyonbackground";
     
     if([self.commandDelegate.settings objectForKey:[onBackgroundKey lowercaseString]] && [[self.commandDelegate.settings objectForKey:[onBackgroundKey lowercaseString]] isEqualToString:@"true"])
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppWillResignActive:)
-                                                 name:UIApplicationDidEnterBackgroundNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppWillResignActive:)
+                                                     name:UIApplicationDidEnterBackgroundNotification object:nil];
     else
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppWillResignActive:)
-                                                 name:UIApplicationWillResignActiveNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppWillResignActive:)
+                                                     name:UIApplicationWillResignActiveNotification object:nil];
 }
 
 #pragma mark - Explicit Commands
@@ -67,7 +70,7 @@ static UIImageView *imageView;
 
 - (void) hidePrivacyScreen:(CDVInvokedUrlCommand*)command
 {
-    [self removePrivacyScreen];
+     [self removePrivacyScreen];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
@@ -95,7 +98,7 @@ static UIImageView *imageView;
 {
     //[self.privacyTimer invalidate];
     if(!self.privacyTimer)
-    self.privacyTimer = [NSTimer scheduledTimerWithTimeInterval:self.privacyTimerInterval
+        self.privacyTimer = [NSTimer scheduledTimerWithTimeInterval:self.privacyTimerInterval
                                                          target:self
                                                        selector:@selector(removePrivacyScreen)
                                                        userInfo:nil
@@ -238,10 +241,10 @@ static UIImageView *imageView;
             switch (currentOrientation) {
                 case UIInterfaceOrientationLandscapeLeft:
                 case UIInterfaceOrientationLandscapeRight:
-                imageName = [imageName stringByAppendingString:@"-Landscape"];
-                break;
+                    imageName = [imageName stringByAppendingString:@"-Landscape"];
+                    break;
                 default:
-                break;
+                    break;
             }
         }
         imageName = [imageName stringByAppendingString:@"-736h"];
@@ -253,21 +256,21 @@ static UIImageView *imageView;
             switch (currentOrientation) {
                 case UIInterfaceOrientationLandscapeLeft:
                 case UIInterfaceOrientationLandscapeRight:
-                imageName = [imageName stringByAppendingString:@"-Landscape"];
-                break;
-                
+                    imageName = [imageName stringByAppendingString:@"-Landscape"];
+                    break;
+                    
                 case UIInterfaceOrientationPortrait:
                 case UIInterfaceOrientationPortraitUpsideDown:
                 default:
-                imageName = [imageName stringByAppendingString:@"-Portrait"];
-                break;
+                    imageName = [imageName stringByAppendingString:@"-Portrait"];
+                    break;
             }
         }
     }
-    //    if(imageName)
-    //    {
-    //        imageName = [imageName stringByAppendingString:@".png"];
-    //    }
+//    if(imageName)
+//    {
+//        imageName = [imageName stringByAppendingString:@".png"];
+//    }
     return imageName;
 }
 
@@ -280,7 +283,7 @@ static UIImageView *imageView;
         NSString* imagePath = [imageName stringByAppendingString:@".png"];
         image = [UIImage imageWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:imagePath]];
         if(image)
-        return image;
+            return image;
         
         //try to take out hyfens and see if that works (Compatbility with Outsystems mobile issue)
         imageName = [imageName stringByReplacingOccurrencesOfString:@"-" withString:@""];
