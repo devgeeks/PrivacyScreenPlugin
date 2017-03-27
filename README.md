@@ -21,12 +21,18 @@ For Cordova 3.x.x:
 Usage:
 ------
 
-This plugin exposes no interface, it simply sets your app to be private. You don't need to do anything except install the plugin.
+This plugin exposes no interface in Android, it simply sets your app to be private. You don't need to do anything except install the plugin.
+
+In iOS the privacy screen fades on page load or in a set time interval, if you want more control you have the following functions:
+- setTimer(successCallback, errorCallback, timeInterval) : sets timer to make privacy screen fade away (default is 3 seconds and can be set through preference).
+- hidePrivacyScreen(successCallback, errorCallback)  : Explicitely hides the privacy screen.
+- showPrivacyScreen(successCallback, errorCallback)  : Explicitely shows the privacy screen (respects timer interval to fade)
 
 For iOS there are 3 preferences that can be set in config.xml:
 - "PrivacyOnBackground": If set to "true" allows splashscreen to be shown only when app enters background (i.e. switched to another app or pressed the home button)
 - "PrivacyOverrideLaunchImage": If set to "true" allows privacy screen to be the Default image even if LaunchImage is set in the info-plist
 - "PrivacyImageName": String for image name, images should be in the app bundle and follow the size naming convention (i.e. for app name "Test", there should be a "Test-667h.png" in the bundle for iPhone 6)
+- "PrivacyTimer": accepts a value in seconds for the privacy screen timer
  
 Test this plugin on a real device because the iOS simulator (7.1 at least) does a poor job hiding your app.
 
