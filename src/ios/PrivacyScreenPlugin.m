@@ -96,9 +96,9 @@ static UIImageView *imageView;
 
 - (void)onAppDidBecomeActive:(UIApplication *)application
 {
-    //[self.privacyTimer invalidate];
-    if(!self.privacyTimer || !self.privacyTimer.valid)
-        self.privacyTimer = [NSTimer scheduledTimerWithTimeInterval:self.privacyTimerInterval
+    [self.privacyTimer invalidate];
+    //if(!self.privacyTimer || !self.privacyTimer.valid)
+    self.privacyTimer = [NSTimer scheduledTimerWithTimeInterval:self.privacyTimerInterval
                                                          target:self
                                                        selector:@selector(removePrivacyScreen)
                                                        userInfo:nil
@@ -126,11 +126,11 @@ static UIImageView *imageView;
                          }];
     }
     
-    if(self.privacyTimer || self.privacyTimer.valid)
-    {
-        [self.privacyTimer invalidate];
-        self.privacyTimer = nil;
-    }
+//    if(self.privacyTimer || self.privacyTimer.valid)
+//    {
+    [self.privacyTimer invalidate];
+    self.privacyTimer = nil;
+//    }
 }
 
 -(void) applyPrivacyScreen
