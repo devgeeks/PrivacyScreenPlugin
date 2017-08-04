@@ -97,7 +97,7 @@ static UIImageView *imageView;
 - (void)onAppDidBecomeActive:(UIApplication *)application
 {
     //[self.privacyTimer invalidate];
-    if(!self.privacyTimer)
+    if(!self.privacyTimer || !self.privacyTimer.valid)
         self.privacyTimer = [NSTimer scheduledTimerWithTimeInterval:self.privacyTimerInterval
                                                          target:self
                                                        selector:@selector(removePrivacyScreen)
@@ -113,11 +113,9 @@ static UIImageView *imageView;
 #pragma mark - Helper functions
 -(void) removePrivacyScreen
 {
-    if (imageView == NULL)
-    {
-        self.viewController.view.window.hidden = NO;
-    }
-    else
+    self.viewController.view.window.hidden = NO;
+    
+    if (imageView != NULL)
     {
         [UIView animateWithDuration:0.1f
                          animations:^{
@@ -128,7 +126,7 @@ static UIImageView *imageView;
                          }];
     }
     
-    if(self.privacyTimer)
+    if(self.privacyTimer || self.privacyTimer.valid)
     {
         [self.privacyTimer invalidate];
         self.privacyTimer = nil;
