@@ -113,10 +113,11 @@ static UIImageView *imageView;
 #pragma mark - Helper functions
 -(void) removePrivacyScreen
 {
-    self.viewController.view.window.hidden = NO;
-    
-    if (imageView != NULL)
+    if(imageView)
     {
+        self.viewController.view.window.hidden = NO;
+        
+        
         [UIView animateWithDuration:0.1f
                          animations:^{
                              imageView.alpha = 0.0f;
@@ -124,6 +125,7 @@ static UIImageView *imageView;
                          completion:^(BOOL finished) {
                              [imageView removeFromSuperview];
                          }];
+        
     }
     
 //    if(self.privacyTimer || self.privacyTimer.valid)
@@ -136,15 +138,18 @@ static UIImageView *imageView;
 -(void) applyPrivacyScreen
 {
     CDVViewController *vc = (CDVViewController*)self.viewController;
-    NSString *imgName = [self getImageName:self.viewController.interfaceOrientation delegate:(id<CDVScreenOrientationDelegate>)vc device:[self getCurrentDevice]];
+    NSString *imgName = [self getImageName:(id<CDVScreenOrientationDelegate>)vc device:[self getCurrentDevice]];
     UIImage* splash = [self getImageFromName:imgName];
+    
     if (splash == NULL)
     {
-        imageView = NULL;
         self.viewController.view.window.hidden = YES;
     }
     else
     {
+        [imageView removeFromSuperview];
+        imageView = nil;
+        
         imageView = [[UIImageView alloc]initWithFrame:[self.viewController.view bounds]];
         [imageView setImage:splash];
         
@@ -154,7 +159,7 @@ static UIImageView *imageView;
         [self.viewController.view addSubview:imageView];
 #endif
     }
-    
+
 }
 
 // Code below borrowed from the CDV splashscreen plugin @ https://github.com/apache/cordova-plugin-splashscreen
@@ -183,7 +188,7 @@ static UIImageView *imageView;
     return device;
 }
 
-- (NSString*)getImageName:(UIInterfaceOrientation)currentOrientation delegate:(id<CDVScreenOrientationDelegate>)orientationDelegate device:(CDV_iOSDevice)device
+- (NSString*)getImageName:(id<CDVScreenOrientationDelegate>)orientationDelegate device:(CDV_iOSDevice)device
 {
     NSString* privacyImageNameKey = @"privacyimagename";
     NSString* prefImageName = [self.commandDelegate.settings objectForKey:[privacyImageNameKey lowercaseString]];
@@ -209,7 +214,7 @@ static UIImageView *imageView;
     // this means there are no mixed orientations in there
     BOOL isOrientationLocked = !(supportsPortrait && supportsLandscape);
     
-    
+    UIDeviceOrientation deviceOrientation = [UIDevice currentDevice].orientation;
     // Add Asset Catalog specific prefixes
     if ([imageName isEqualToString:@"LaunchImage"])
     {
@@ -219,14 +224,14 @@ static UIImageView *imageView;
             imageName = [imageName stringByAppendingString:@"-800"];
         } else if(device.iPhone6Plus) {
             imageName = [imageName stringByAppendingString:@"-800"];
-            if (currentOrientation == UIInterfaceOrientationPortrait || currentOrientation == UIInterfaceOrientationPortraitUpsideDown) {
+            if (deviceOrientation == UIDeviceOrientationPortrait || deviceOrientation == UIDeviceOrientationPortraitUpsideDown) {
                 imageName = [imageName stringByAppendingString:@"-Portrait"];
             }
         }
     }
     
     BOOL isLandscape = supportsLandscape &&
-    (currentOrientation == UIInterfaceOrientationLandscapeLeft || currentOrientation == UIInterfaceOrientationLandscapeRight);
+    (deviceOrientation == UIDeviceOrientationLandscapeLeft || deviceOrientation == UIDeviceOrientationLandscapeRight);
     
     if (device.iPhone5) { // does not support landscape
         imageName = isLandscape ? nil : [imageName stringByAppendingString:@"-568h"];
@@ -236,7 +241,7 @@ static UIImageView *imageView;
         if (isOrientationLocked) {
             imageName = [imageName stringByAppendingString:(supportsLandscape ? @"-Landscape" : @"")];
         } else {
-            switch (currentOrientation) {
+            switch (deviceOrientation) {
                 case UIInterfaceOrientationLandscapeLeft:
                 case UIInterfaceOrientationLandscapeRight:
                     imageName = [imageName stringByAppendingString:@"-Landscape"];
@@ -251,7 +256,7 @@ static UIImageView *imageView;
         if (isOrientationLocked) {
             imageName = [imageName stringByAppendingString:(supportsLandscape ? @"-Landscape" : @"-Portrait")];
         } else {
-            switch (currentOrientation) {
+            switch (deviceOrientation) {
                 case UIInterfaceOrientationLandscapeLeft:
                 case UIInterfaceOrientationLandscapeRight:
                     imageName = [imageName stringByAppendingString:@"-Landscape"];
