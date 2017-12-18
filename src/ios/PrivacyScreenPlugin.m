@@ -304,7 +304,10 @@ static UIImageView *imageView;
     NSString* imageName;
     // detect if we are using CB-9762 Launch Storyboard; if so, return the associated image instead
     if ([self isUsingCDVLaunchScreen]) {
-        imageName = @"Default";
+        // Use UILaunchImageFile if specified in plist.  Otherwise, use Default.
+        imageName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UILaunchImageFile"];
+        imageName = [imageName stringByDeletingPathExtension];
+        imageName = imageName ? imageName : @"LaunchImage";
         return imageName;
     }
     NSString* privacyImageNameKey = @"privacyimagename";

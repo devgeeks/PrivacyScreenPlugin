@@ -36,8 +36,8 @@ For iOS there are 3 preferences that can be set in config.xml:
 
 When using splash storyboard add images to the config xml.
 (i.e
-  <splash src="res/screen/ios/Default@2x~universal~anyany.png" />
-  <splash src="res/screen/ios/Default@3x~universal~anyany.png" />
+  <splash src="res/screen/ios/LaunchImage@2x~universal~anyany.png" />
+  <splash src="res/screen/ios/LaunchImage@3x~universal~anyany.png" />
   )
 
 Test this plugin on a real device because the iOS simulator (7.1 at least) does a poor job hiding your app.
