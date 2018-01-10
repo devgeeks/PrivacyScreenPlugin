@@ -353,7 +353,9 @@ static UIImageView *imageView;
     BOOL isLandscape = supportsLandscape &&
     (deviceOrientation == UIDeviceOrientationLandscapeLeft || deviceOrientation == UIDeviceOrientationLandscapeRight);
     
-    if (device.iPhone5) { // does not support landscape
+    if (device.iPhone4) { // does not support landscape
+        imageName = isLandscape ? nil : [imageName stringByAppendingString:@"-480h"];
+    } else if (device.iPhone5) { // does not support landscape
         imageName = isLandscape ? nil : [imageName stringByAppendingString:@"-568h"];
     } else if (device.iPhone6) { // does not support landscape
         imageName = isLandscape ? nil : [imageName stringByAppendingString:@"-667h"];
