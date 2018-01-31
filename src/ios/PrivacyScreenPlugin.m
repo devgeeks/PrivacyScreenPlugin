@@ -140,15 +140,8 @@ static UIImageView *imageView;
     CDVViewController *vc = (CDVViewController*)self.viewController;
     NSString *imgName = [self getImageName:(id<CDVScreenOrientationDelegate>)vc device:[self getCurrentDevice]];
     UIImage* splash;
-    if([self isUsingCDVLaunchScreen])
-    {
-        splash = [self updatePrivacyImage];
-    }
-    else
-    {
-        splash = [self getImageFromName:imgName];
-   
-    }
+
+    splash = [self getImageFromName:imgName];
     
     if (splash == NULL)
     {
@@ -156,14 +149,12 @@ static UIImageView *imageView;
     }
     else
     {
-        if(![self isUsingCDVLaunchScreen])
-        {
-            [imageView removeFromSuperview];
-            imageView = nil;
+
+        [imageView removeFromSuperview];
+        imageView = nil;
             
-            imageView = [[UIImageView alloc]initWithFrame:[self.viewController.view bounds]];
-            [imageView setImage:splash];
-        }
+        imageView = [[UIImageView alloc]initWithFrame:[self.viewController.view bounds]];
+        [imageView setImage:splash];
         
 #ifdef __CORDOVA_4_0_0
         [[UIApplication sharedApplication].keyWindow addSubview:imageView];
@@ -202,52 +193,8 @@ static UIImageView *imageView;
     return device;
 }
 
-- (BOOL) isUsingCDVLaunchScreen {
-    NSString* launchStoryboardName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UILaunchStoryboardName"];
-    if (launchStoryboardName) {
-        return ([launchStoryboardName isEqualToString:@"CDVLaunchScreen"]);
-    } else {
-        return NO;
-    }
-}
-
-// Sets the view's frame and image.
-- (UIImage*)updatePrivacyImage
-{
-    NSString* imageName = [self getImageName:(id<CDVScreenOrientationDelegate>)self.viewController device:[self getCurrentDevice]];
-    
-    UIImage* img = [UIImage imageNamed:imageName];
-    [imageView removeFromSuperview];
-    imageView = nil;
-    
-    imageView = [[UIImageView alloc]initWithFrame:[self.viewController.view bounds]];
-    [imageView setImage: img];
-    
-    // Check that splash screen's image exists before updating bounds
-    if (imageView.image)
-    {
-        [self updateBounds];
-    }
-    else
-    {
-        NSLog(@"WARNING: The splashscreen image named %@ was not found", imageName);
-    }
-    return img;
-}
-
 - (void)updateBounds
 {
-    /*
-     * Launch Screen StoryBoard not supported 
-     *
-    if ([self isUsingCDVLaunchScreen]) {
-        // CB-9762's launch screen expects the image to fill the screen and be scaled using AspectFill.
-        CGSize viewportSize = [UIApplication sharedApplication].delegate.window.bounds.size;
-        imageView.frame = CGRectMake(0, 0, viewportSize.width, viewportSize.height);
-        imageView.contentMode = UIViewContentModeScaleAspectFill;
-        return;
-    }
-    */
     
     UIImage* img = imageView.image;
     CGRect imgBounds = (img) ? CGRectMake(0, 0, img.size.width, img.size.height) : CGRectZero;
@@ -307,18 +254,6 @@ static UIImageView *imageView;
 {
     
     NSString* imageName;
-    /*
-     * Launch Storyboard not supported
-        // detect if we are using CB-9762 Launch Storyboard; if so, return the associated image instead
-        if ([self isUsingCDVLaunchScreen]) {
-            // Use UILaunchImageFile if specified in plist.  Otherwise, use Default.
-            imageName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UILaunchImageFile"];
-            imageName = [imageName stringByDeletingPathExtension];
-            imageName = imageName ? imageName : @"LaunchImage";
-            return imageName;
-        }
-      *
-    */
     
     NSString* privacyImageNameKey = @"privacyimagename";
     NSString* prefImageName = [self.commandDelegate.settings objectForKey:[privacyImageNameKey lowercaseString]];
@@ -370,7 +305,7 @@ static UIImageView *imageView;
     } else if (device.iPhone6) { // does not support landscape
         imageName = isLandscape ? nil : [imageName stringByAppendingString:@"667h"];
     } else if (device.iPhoneX) { // does not support landscape
-        imageName = isLandscape ? nil : [imageName stringByAppendingString:@"812];
+        imageName = isLandscape ? nil : [imageName stringByAppendingString:@"812h"];
     } else if (device.iPhone6Plus) { // supports landscape
         if (isOrientationLocked) {
             imageName = [imageName stringByAppendingString:(supportsLandscape ? @"Landscape" : @"")];
