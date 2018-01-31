@@ -197,6 +197,7 @@ static UIImageView *imageView;
     // this is appropriate for detecting the runtime screen environment
     device.iPhone6 = (device.iPhone && limit == 667.0);
     device.iPhone6Plus = (device.iPhone && limit == 736.0);
+    device.iPhoneX = (device.iPhone && limit == 812.0);
     
     return device;
 }
@@ -236,6 +237,9 @@ static UIImageView *imageView;
 
 - (void)updateBounds
 {
+    /*
+     * Launch Screen StoryBoard not supported 
+     *
     if ([self isUsingCDVLaunchScreen]) {
         // CB-9762's launch screen expects the image to fill the screen and be scaled using AspectFill.
         CGSize viewportSize = [UIApplication sharedApplication].delegate.window.bounds.size;
@@ -243,6 +247,7 @@ static UIImageView *imageView;
         imageView.contentMode = UIViewContentModeScaleAspectFill;
         return;
     }
+    */
     
     UIImage* img = imageView.image;
     CGRect imgBounds = (img) ? CGRectMake(0, 0, img.size.width, img.size.height) : CGRectZero;
@@ -302,14 +307,19 @@ static UIImageView *imageView;
 {
     
     NSString* imageName;
-    // detect if we are using CB-9762 Launch Storyboard; if so, return the associated image instead
-    if ([self isUsingCDVLaunchScreen]) {
-        // Use UILaunchImageFile if specified in plist.  Otherwise, use Default.
-        imageName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UILaunchImageFile"];
-        imageName = [imageName stringByDeletingPathExtension];
-        imageName = imageName ? imageName : @"LaunchImage";
-        return imageName;
-    }
+    /*
+     * Launch Storyboard not supported
+        // detect if we are using CB-9762 Launch Storyboard; if so, return the associated image instead
+        if ([self isUsingCDVLaunchScreen]) {
+            // Use UILaunchImageFile if specified in plist.  Otherwise, use Default.
+            imageName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UILaunchImageFile"];
+            imageName = [imageName stringByDeletingPathExtension];
+            imageName = imageName ? imageName : @"LaunchImage";
+            return imageName;
+        }
+      *
+    */
+    
     NSString* privacyImageNameKey = @"privacyimagename";
     NSString* prefImageName = [self.commandDelegate.settings objectForKey:[privacyImageNameKey lowercaseString]];
     imageName = prefImageName ? prefImageName : @"Default";
@@ -354,40 +364,42 @@ static UIImageView *imageView;
     (deviceOrientation == UIDeviceOrientationLandscapeLeft || deviceOrientation == UIDeviceOrientationLandscapeRight);
     
     if (device.iPhone4) { // does not support landscape
-        imageName = isLandscape ? nil : [imageName stringByAppendingString:@"-480h"];
+        imageName = isLandscape ? nil : [imageName stringByAppendingString:@"480h"];
     } else if (device.iPhone5) { // does not support landscape
-        imageName = isLandscape ? nil : [imageName stringByAppendingString:@"-568h"];
+        imageName = isLandscape ? nil : [imageName stringByAppendingString:@"568h"];
     } else if (device.iPhone6) { // does not support landscape
-        imageName = isLandscape ? nil : [imageName stringByAppendingString:@"-667h"];
+        imageName = isLandscape ? nil : [imageName stringByAppendingString:@"667h"];
+    } else if (device.iPhoneX) { // does not support landscape
+        imageName = isLandscape ? nil : [imageName stringByAppendingString:@"812];
     } else if (device.iPhone6Plus) { // supports landscape
         if (isOrientationLocked) {
-            imageName = [imageName stringByAppendingString:(supportsLandscape ? @"-Landscape" : @"")];
+            imageName = [imageName stringByAppendingString:(supportsLandscape ? @"Landscape" : @"")];
         } else {
             switch (deviceOrientation) {
                 case UIInterfaceOrientationLandscapeLeft:
                 case UIInterfaceOrientationLandscapeRight:
-                    imageName = [imageName stringByAppendingString:@"-Landscape"];
+                    imageName = [imageName stringByAppendingString:@"Landscape"];
                     break;
                 default:
                     break;
             }
         }
-        imageName = [imageName stringByAppendingString:@"-736h"];
+        imageName = [imageName stringByAppendingString:@"736h"];
         
     } else if (device.iPad) { // supports landscape
         if (isOrientationLocked) {
-            imageName = [imageName stringByAppendingString:(supportsLandscape ? @"-Landscape" : @"-Portrait")];
+            imageName = [imageName stringByAppendingString:(supportsLandscape ? @"Landscape" : @"Portrait")];
         } else {
             switch (deviceOrientation) {
                 case UIInterfaceOrientationLandscapeLeft:
                 case UIInterfaceOrientationLandscapeRight:
-                    imageName = [imageName stringByAppendingString:@"-Landscape"];
+                    imageName = [imageName stringByAppendingString:@"Landscape"];
                     break;
                     
                 case UIInterfaceOrientationPortrait:
                 case UIInterfaceOrientationPortraitUpsideDown:
                 default:
-                    imageName = [imageName stringByAppendingString:@"-Portrait"];
+                    imageName = [imageName stringByAppendingString:@"Portrait"];
                     break;
             }
         }
