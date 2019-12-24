@@ -17,6 +17,9 @@ static UIImageView *imageView;
 
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppWillResignActive:)
                                                name:UIApplicationWillResignActiveNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onUIScreen.capturedDidChangeNotification:)
+                                               name:UIScreen.capturedDidChangeNotification object:nil];
+  
 }
 
 - (void)onAppDidBecomeActive:(UIApplication *)application
@@ -45,6 +48,14 @@ static UIImageView *imageView;
     #else
         [self.viewController.view addSubview:imageView];
     #endif
+  }
+}
+- (void)onUIScreen.capturedDidChangeNotification:(UIApplication *)application
+{
+  if (imageView == NULL) {
+    self.viewController.view.window.hidden = NO;
+  } else {
+    [imageView removeFromSuperview];
   }
 }
 
