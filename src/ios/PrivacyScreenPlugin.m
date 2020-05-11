@@ -40,9 +40,10 @@ static UIImageView *imageView;
     imageView = [[UIImageView alloc]initWithFrame:[self.viewController.view bounds]];
     [imageView setImage:splash];
     
-    // [imageView setContentMode:UIViewContentModeCenter]; // custom
-    //[imageView setContentMode:UIViewContentModeScaleAspectFit]; // custom
-    [imageView setContentMode:UIViewContentModeScaleAspectFill]; // custom
+    if ([self isUsingCDVLaunchScreen]) {
+        // launch screen expects the image to be scaled using AspectFill.
+        imageView.contentMode = UIViewContentModeScaleAspectFill;
+    }
     
     #ifdef __CORDOVA_4_0_0
         [[UIApplication sharedApplication].keyWindow addSubview:imageView];
@@ -74,6 +75,8 @@ static UIImageView *imageView;
   // this is appropriate for detecting the runtime screen environment
   device.iPhone6 = (device.iPhone && limit == 667.0);
   device.iPhone6Plus = (device.iPhone && limit == 736.0);
+  device.iPhoneX = (device.iPhone && limit >= 812.0);
+
   
   return device;
 }
