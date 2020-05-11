@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/holgergp/PrivacyScreenPlugin.git"
+    "url": "git+https://github.com/holgergp/PrivacyScreenPlugin-Storyboard.git"
   },
   "keywords": [
     "privacy",
@@ -25,7 +25,7 @@
   "contributors": ["Holger Grosse-Plankermann <holger.grosse-plankermann@codecentric.de>"],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/holgergp/PrivacyScreenPlugin/issues"
+    "url": "https://github.com/holgergp/PrivacyScreenPlugin-Storyboard/issues"
   },
-  "homepage": "https://github.com/holgergp/PrivacyScreenPlugin#readme"
+  "homepage": "https://github.com/holgergp/PrivacyScreenPlugin-Storyboard#readme"
 }
