@@ -40,6 +40,10 @@ static UIImageView *imageView;
     imageView = [[UIImageView alloc]initWithFrame:[self.viewController.view bounds]];
     [imageView setImage:splash];
     
+    // [imageView setContentMode:UIViewContentModeCenter]; // custom
+    //[imageView setContentMode:UIViewContentModeScaleAspectFit]; // custom
+    [imageView setContentMode:UIViewContentModeScaleAspectFill]; // custom
+    
     #ifdef __CORDOVA_4_0_0
         [[UIApplication sharedApplication].keyWindow addSubview:imageView];
     #else
