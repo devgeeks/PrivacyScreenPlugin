@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Secures your app from displaying a screenshot in task switchers under Android and iOS. Keeps sensitive information private.",
   "cordova": {
-    "id": "cordova-plugin-privacyscreen",
+    "id": "cordova-plugin-privacyscreen-storyboard",
     "platforms": [
       "android",
       "ios"
@@ -11,14 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/devgeeks/PrivacyScreenPlugin.git"
+    "url": "git+https://github.com/holgergp/PrivacyScreenPlugin.git"
   },
   "keywords": [
     "privacy",
     "cordova",
     "ecosystem:cordova",
     "cordova-android",
-    "cordova-ios"
+    "cordova-ios",
+    "storyboard"
   ],
   "author": "Tommy-Carlos Willaims <tommy@devgeeks.org>",
   "contributors": ["Holger Grosse-Plankermann <holger.grosse-plankermann@codecentric.de>"],
