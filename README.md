@@ -1,9 +1,5 @@
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/holgergp/PrivacyScreenPlugin)
-
 PrivacyScreenPlugin-Storyboard
 ==================
-This is a fork of the wonderful [PrivacyScreenPlugin](https://github.com/devgeeks/PrivacyScreenPlugin)
-It's the same codebase for Android. For iOS it adds basic support for [iOS Storyboard images](https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-splashscreen/#launch-storyboard-images).
 
 Both iOS (as of iOS 7) and Android have app switchers that display a screenshot of your app.
 
@@ -19,8 +15,8 @@ Installation
 
 For Cordova 3.x.x:
 
-1. To add this plugin just type: `cordova plugin add cordova-plugin-privacyscreen-storyboard` or `phonegap local plugin add cordova-plugin-privacyscreen-storyboard`
-2. To remove this plugin type: `cordova plugin remove cordova-plugin-privacyscreen-storyboard` or `phonegap local plugin remove cordova-plugin-privacyscreen-storyboard`
+1. To add this plugin just type: `cordova plugin add cordova-plugin-privacyscreen` or `phonegap local plugin add cordova-plugin-privacyscreen`
+2. To remove this plugin type: `cordova plugin remove cordova-plugin-privacyscreen` or `phonegap local plugin remove cordova-plugin-privacyscreen`
 
 Usage:
 ------
