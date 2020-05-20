@@ -1,3 +1,5 @@
+NOTE: This plugin is NOT being actively maintained. I no longer work on Cordova/PhoneGap plugins and it is essentially abandonware. Please feel free to fork it and update it if you need to.
+
 PrivacyScreenPlugin
 ==================
 
