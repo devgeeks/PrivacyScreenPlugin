@@ -5,21 +5,16 @@
  * MIT Licensed
  */
 #import "PrivacyScreenPlugin.h"
-
-static UIImageView *imageView;
-
+UIImageView *imageView;
 @implementation PrivacyScreenPlugin
-
 - (void)pluginInitialize
 {
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppDidBecomeActive:)
-                                               name:UIApplicationDidBecomeActiveNotification object:nil];
-
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForeground:)
+                                               name:UIApplicationWillEnterForegroundNotification object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppWillResignActive:)
-                                               name:UIApplicationWillResignActiveNotification object:nil];
+                                               name:UIApplicationDidEnterBackgroundNotification object:nil];
 }
-
-- (void)onAppDidBecomeActive:(UIApplication *)application
+- (void)applicationWillEnterForeground:(UIApplication *)application
 {
   if (imageView == NULL) {
     self.viewController.view.window.hidden = NO;
@@ -27,19 +22,16 @@ static UIImageView *imageView;
     [imageView removeFromSuperview];
   }
 }
-
-- (void)onAppWillResignActive:(UIApplication *)application
+- (void)applicationDidEnterBackground:(UIApplication *)application
 {
   CDVViewController *vc = (CDVViewController*)self.viewController;
   NSString *imgName = [self getImageName:self.viewController.interfaceOrientation delegate:(id<CDVScreenOrientationDelegate>)vc device:[self getCurrentDevice]];
   UIImage *splash = [UIImage imageNamed:imgName];
   if (splash == NULL) {
-    imageView = NULL;
     self.viewController.view.window.hidden = YES;
   } else {
     imageView = [[UIImageView alloc]initWithFrame:[self.viewController.view bounds]];
     [imageView setImage:splash];
-    
     #ifdef __CORDOVA_4_0_0
         [[UIApplication sharedApplication].keyWindow addSubview:imageView];
     #else
@@ -47,19 +39,15 @@ static UIImageView *imageView;
     #endif
   }
 }
-
 // Code below borrowed from the CDV splashscreen plugin @ https://github.com/apache/cordova-plugin-splashscreen
 // Made some adjustments though, becuase landscape splashscreens are not available for iphone < 6 plus
 - (CDV_iOSDevice) getCurrentDevice
 {
   CDV_iOSDevice device;
-  
   UIScreen* mainScreen = [UIScreen mainScreen];
   CGFloat mainScreenHeight = mainScreen.bounds.size.height;
   CGFloat mainScreenWidth = mainScreen.bounds.size.width;
-  
   int limit = MAX(mainScreenHeight,mainScreenWidth);
-  
   device.iPad = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad);
   device.iPhone = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone);
   device.retina = ([mainScreen scale] == 2.0);
@@ -70,29 +58,23 @@ static UIImageView *imageView;
   // this is appropriate for detecting the runtime screen environment
   device.iPhone6 = (device.iPhone && limit == 667.0);
   device.iPhone6Plus = (device.iPhone && limit == 736.0);
-  
   return device;
 }
-
 - (NSString*)getImageName:(UIInterfaceOrientation)currentOrientation delegate:(id<CDVScreenOrientationDelegate>)orientationDelegate device:(CDV_iOSDevice)device
 {
   // Use UILaunchImageFile if specified in plist.  Otherwise, use Default.
   NSString* imageName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UILaunchImageFile"];
-  
   NSUInteger supportedOrientations = [orientationDelegate supportedInterfaceOrientations];
-  
   // Checks to see if the developer has locked the orientation to use only one of Portrait or Landscape
   BOOL supportsLandscape = (supportedOrientations & UIInterfaceOrientationMaskLandscape);
   BOOL supportsPortrait = (supportedOrientations & UIInterfaceOrientationMaskPortrait || supportedOrientations & UIInterfaceOrientationMaskPortraitUpsideDown);
   // this means there are no mixed orientations in there
   BOOL isOrientationLocked = !(supportsPortrait && supportsLandscape);
-  
   if (imageName) {
     imageName = [imageName stringByDeletingPathExtension];
   } else {
     imageName = @"Default";
   }
-
   // Add Asset Catalog specific prefixes
   if ([imageName isEqualToString:@"LaunchImage"])
   {
@@ -107,10 +89,8 @@ static UIImageView *imageView;
       }
     }
   }
-  
   BOOL isLandscape = supportsLandscape &&
   (currentOrientation == UIInterfaceOrientationLandscapeLeft || currentOrientation == UIInterfaceOrientationLandscapeRight);
-  
   if (device.iPhone5) { // does not support landscape
     imageName = isLandscape ? nil : [imageName stringByAppendingString:@"-568h"];
   } else if (device.iPhone6) { // does not support landscape
@@ -129,7 +109,6 @@ static UIImageView *imageView;
       }
     }
     imageName = [imageName stringByAppendingString:@"-736h"];
-    
   } else if (device.iPad) { // supports landscape
     if (isOrientationLocked) {
       imageName = [imageName stringByAppendingString:(supportsLandscape ? @"-Landscape" : @"-Portrait")];
@@ -139,7 +118,6 @@ static UIImageView *imageView;
         case UIInterfaceOrientationLandscapeRight:
           imageName = [imageName stringByAppendingString:@"-Landscape"];
           break;
-          
         case UIInterfaceOrientationPortrait:
         case UIInterfaceOrientationPortraitUpsideDown:
         default:
@@ -148,8 +126,6 @@ static UIImageView *imageView;
       }
     }
   }
-  
   return imageName;
 }
-
 @end
