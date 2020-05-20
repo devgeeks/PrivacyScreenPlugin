@@ -40,6 +40,11 @@ static UIImageView *imageView;
     imageView = [[UIImageView alloc]initWithFrame:[self.viewController.view bounds]];
     [imageView setImage:splash];
     
+    if ([self isUsingCDVLaunchScreen]) {
+        // launch screen expects the image to be scaled using AspectFill.
+        imageView.contentMode = UIViewContentModeScaleAspectFill;
+    }
+    
     #ifdef __CORDOVA_4_0_0
         [[UIApplication sharedApplication].keyWindow addSubview:imageView];
     #else
@@ -74,6 +79,16 @@ static UIImageView *imageView;
   return device;
 }
 
+- (BOOL) isUsingCDVLaunchScreen {
+    NSString* launchStoryboardName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UILaunchStoryboardName"];
+    if (launchStoryboardName) {
+        return ([launchStoryboardName isEqualToString:@"CDVLaunchScreen"]);
+    } else {
+        return NO;
+    }
+}
+
+
 - (NSString*)getImageName:(UIInterfaceOrientation)currentOrientation delegate:(id<CDVScreenOrientationDelegate>)orientationDelegate device:(CDV_iOSDevice)device
 {
   // Use UILaunchImageFile if specified in plist.  Otherwise, use Default.
@@ -81,6 +96,13 @@ static UIImageView *imageView;
   
   NSUInteger supportedOrientations = [orientationDelegate supportedInterfaceOrientations];
   
+  // detect if we are using CB-9762 Launch Storyboard; if so, return the associated image instead
+  if ([self isUsingCDVLaunchScreen]) {
+      imageName = @"LaunchStoryboard";
+      return imageName;
+  }
+
+
   // Checks to see if the developer has locked the orientation to use only one of Portrait or Landscape
   BOOL supportsLandscape = (supportedOrientations & UIInterfaceOrientationMaskLandscape);
   BOOL supportsPortrait = (supportedOrientations & UIInterfaceOrientationMaskPortrait || supportedOrientations & UIInterfaceOrientationMaskPortraitUpsideDown);
