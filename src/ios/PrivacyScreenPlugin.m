@@ -12,14 +12,14 @@ static UIImageView *imageView;
 
 - (void)pluginInitialize
 {
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppDidBecomeActive:)
-                                               name:UIApplicationDidBecomeActiveNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppWillEnterForeground:)
+                                           name:UIApplicationWillEnterForegroundNotification object:nil];
 
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppWillResignActive:)
-                                               name:UIApplicationWillResignActiveNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppDidEnterBackground:)
+                                           name:UIApplicationDidEnterBackgroundNotification object:nil];
 }
 
-- (void)onAppDidBecomeActive:(UIApplication *)application
+- (void)onAppWillEnterForeground:(UIApplication *)application
 {
   if (imageView == NULL) {
     self.viewController.view.window.hidden = NO;
@@ -28,7 +28,7 @@ static UIImageView *imageView;
   }
 }
 
-- (void)onAppWillResignActive:(UIApplication *)application
+- (void)onAppDidEnterBackground:(UIApplication *)application
 {
   CDVViewController *vc = (CDVViewController*)self.viewController;
   NSString *imgName = [self getImageName:self.viewController.interfaceOrientation delegate:(id<CDVScreenOrientationDelegate>)vc device:[self getCurrentDevice]];
@@ -37,7 +37,8 @@ static UIImageView *imageView;
     imageView = NULL;
     self.viewController.view.window.hidden = YES;
   } else {
-    imageView = [[UIImageView alloc]initWithFrame:[self.viewController.view bounds]];
+    imageView = [[UIImageView alloc]initWithFrame:[[UIScreen mainScreen] bounds]];
+    imageView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
     [imageView setImage:splash];
     
     #ifdef __CORDOVA_4_0_0
@@ -79,6 +80,10 @@ static UIImageView *imageView;
   // Use UILaunchImageFile if specified in plist.  Otherwise, use Default.
   NSString* imageName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UILaunchImageFile"];
   
+  if (imageName == nil && [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UILaunchImages"] != nil){
+     imageName = @"LaunchImage";
+  }
+  
   NSUInteger supportedOrientations = [orientationDelegate supportedInterfaceOrientations];
   
   // Checks to see if the developer has locked the orientation to use only one of Portrait or Landscape
@@ -111,11 +116,11 @@ static UIImageView *imageView;
   BOOL isLandscape = supportsLandscape &&
   (currentOrientation == UIInterfaceOrientationLandscapeLeft || currentOrientation == UIInterfaceOrientationLandscapeRight);
   
-  if (device.iPhone5) { // does not support landscape
-    imageName = isLandscape ? nil : [imageName stringByAppendingString:@"-568h"];
-  } else if (device.iPhone6) { // does not support landscape
-    imageName = isLandscape ? nil : [imageName stringByAppendingString:@"-667h"];
-  } else if (device.iPhone6Plus) { // supports landscape
+     if (device.iPhone5) { // does not support landscape, so use landscape image instead of showing a black screen     
+            imageName = [imageName stringByAppendingString:@"-568h"];
+    } else if (device.iPhone6) { // does not support landscape, so use landscape image instead of showing a black screen 
+            imageName = [imageName stringByAppendingString:@"-667h"];
+    } else if (device.iPhone6Plus) { // supports landscape
     if (isOrientationLocked) {
       imageName = [imageName stringByAppendingString:(supportsLandscape ? @"-Landscape" : @"")];
     } else {
